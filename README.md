@@ -8,13 +8,13 @@ A web platform that helps basketball players find courts, organize games, and co
 
 * Basketball court listing
 * District-based filtering
+* Court detail pages
 * React Router navigation
 * Responsive application structure
 * Local court database using JSON seed data
 
 ### Planned Features
 
-* Court detail pages
 * Interactive map integration
 * User registration and authentication
 * Favorite courts
@@ -44,53 +44,37 @@ A web platform that helps basketball players find courts, organize games, and co
 
 ---
 
-## Project Structure
-
-
-frontend/
-├── src/
-│   ├── components/
-│   │   ├── Header/
-│   │   └── Footer/
-│   │
-│   ├── pages/
-│   ├── routes/
-│   └── data/
-│
-└── package.json
-
-backend/
-```
-
----
-
 ## Current Status
 
 The project is currently in the MVP development phase.
 
-Implemented:
+### Implemented
 
 * Project architecture setup
 * React Router configuration
 * Header component
 * Footer component
+* CourtCard component
 * Court JSON data model
 * Court listing page
 * District filtering system
-
-In Progress:
-
-* Additional pages
+* Dynamic court detail routing
 * Court detail page
-* UI improvements
 
-Planned:
+### In Progress
+
+* UI improvements
+* Court detail enhancements
+
+### Planned
 
 * Backend API
 * MongoDB integration
 * Authentication system
-* Matchmaking system
-* Real-time notifications
+* Favorite courts
+* Match creation
+* Real-time matchmaking
+* Notification system
 
 ---
 

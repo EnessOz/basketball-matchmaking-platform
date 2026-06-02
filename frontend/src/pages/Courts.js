@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import courtsData from "../data/courts.json";
+import CourtCard from "../components/courtCart/CourtCard";
 import "./Courts.css";
 
 const Courts = () => {
   const [district, setDistrict] = useState("all");
+
   const districts = [...new Set(courtsData.map((c) => c.district))];
 
   const filteredCourts =
@@ -32,34 +34,7 @@ const Courts = () => {
 
       <div className="courts-grid">
         {filteredCourts.map((court) => (
-          <div key={court.id} className="court-card">
-            <img
-              className="court-image"
-              src={court.images[0]}
-              alt={court.name}
-            />
-
-            <h2 className="court-name">{court.name}</h2>
-
-            <p className="court-location">
-              {court.district} - {court.city}
-            </p>
-
-            <p className="court-rating">⭐ {court.rating}</p>
-
-            <p className="court-features">
-              {court.features.lighting ? "Işıklı" : "Işıksız"} |{" "}
-              {court.features.indoor ? "Kapalı" : "Açık"}
-            </p>
-
-            <div className="court-tags">
-              {court.tags.map((tag) => (
-                <span key={tag} className="court-tag">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
+          <CourtCard key={court.id} court={court} />
         ))}
       </div>
     </div>

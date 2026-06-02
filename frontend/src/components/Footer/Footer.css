@@ -1,0 +1,27 @@
+.footer-container {
+    height: 70px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(165, 196, 94);
+    padding: 0 30px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+}
+
+.active {
+    color: orange;
+    font-weight: 700;
+}
+
+.footer-left,
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
