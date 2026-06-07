@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import courtsData from "../data/courts.json";
 import "./CourtDetail.css";
 
@@ -16,6 +16,8 @@ const CourtDetail = () => {
       </div>
     );
   }
+
+  const googleMapsUrl = `https://www.google.com/maps?q=${court.location.lat},${court.location.lng}`;
 
   return (
     <div className="court-detail-page">
@@ -51,8 +53,25 @@ const CourtDetail = () => {
           </div>
 
           <div className="court-detail-actions">
-            <button>Favorilere Ekle</button>
-            <button>Bu Sahada Maç Oluştur</button>
+            <button className="court-detail-button">
+              Favorilere Ekle
+            </button>
+
+            <a
+              className="court-detail-button"
+              href={googleMapsUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Google Maps'te Aç
+            </a>
+
+            <Link
+              className="court-detail-button primary"
+              to={`/courts/${court.id}/create-match`}
+            >
+              Bu Sahada Maç Oluştur
+            </Link>
           </div>
         </div>
       </div>
