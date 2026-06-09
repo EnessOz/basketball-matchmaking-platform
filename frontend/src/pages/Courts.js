@@ -5,19 +5,34 @@ import "./Courts.css";
 
 const Courts = () => {
   const [district, setDistrict] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const districts = [...new Set(courtsData.map((c) => c.district))];
 
-  const filteredCourts =
-    district === "all"
-      ? courtsData
-      : courtsData.filter((c) => c.district === district);
+  const filteredCourts = courtsData.filter((court) => {
+    const matchesDistrict =
+      district === "all" || court.district === district;
+
+    const matchesSearch = court.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    return matchesDistrict && matchesSearch;
+  });
 
   return (
     <div className="courts-page">
       <h1 className="courts-title">Basket Sahaları</h1>
 
       <div className="courts-filter">
+        <input
+          className="court-search-input"
+          type="text"
+          placeholder="Saha ara..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
         <select
           className="district-select"
           value={district}

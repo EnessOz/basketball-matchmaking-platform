@@ -1,0 +1,34 @@
+.match-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 16px;
+    background: white;
+    transition: 0.2s ease;
+    cursor: pointer;
+}
+
+.match-court-name {
+    margin-bottom: 12px;
+}
+
+.match-date,
+.match-time,
+.match-player-count {
+    margin-bottom: 6px;
+}
+
+.match-description {
+    margin-top: 12px;
+    color: #555;
+}
+
+.match-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+.match-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}

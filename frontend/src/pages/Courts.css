@@ -1,90 +1,32 @@
-.court-detail-page {
+.courts-page {
   padding: 30px;
 }
 
-.court-detail-container {
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.court-detail-image {
-  width: 100%;
-  max-height: 360px;
-  object-fit: cover;
-  border-radius: 12px;
-}
-
-.court-detail-content {
-  margin-top: 24px;
-}
-
-.court-detail-title {
-  margin-bottom: 10px;
+.courts-title {
+  margin-bottom: 24px;
   font-size: 32px;
 }
 
-.court-detail-location {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.court-detail-address {
-  color: #666;
-  margin-bottom: 16px;
-}
-
-.court-detail-info {
+.courts-filter {
   display: flex;
-  flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 18px;
-}
-
-.court-detail-info p {
-  background: #f2f2f2;
-  padding: 8px 12px;
-  border-radius: 8px;
-  margin: 0;
-}
-
-.court-detail-tags {
   margin-bottom: 24px;
-}
-
-.court-detail-tag {
-  display: inline-block;
-  margin-right: 8px;
-  margin-bottom: 8px;
-  font-size: 13px;
-  background: #eee;
-  padding: 5px 9px;
-  border-radius: 6px;
-}
-
-.court-detail-actions {
-  display: flex;
   flex-wrap: wrap;
-  gap: 12px;
 }
 
-.court-detail-button {
-  display: inline-block;
-  padding: 10px 16px;
-  border: none;
+.court-search-input,
+.district-select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  cursor: pointer;
-  background: #eeeeee;
-  color: #111;
-  text-decoration: none;
   font-size: 14px;
 }
 
-.court-detail-button.primary {
-  background: #111;
-  color: #fff;
+.court-search-input {
+  min-width: 240px;
 }
 
-.court-detail-button:hover {
-  opacity: 0.85;
+.courts-grid {
+  display: grid;
+  gap: 18px;
 }

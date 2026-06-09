@@ -1,34 +1,68 @@
 .header-container {
-  height: 100px;
-
+  min-height: 82px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: bisque;
-  padding: 0 30px;
+  background: #111111;
+  padding: 0 36px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.nav-link {
-  text-decoration: none;
-  color: black;
-  font-weight: 500;
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.active {
-  color: orange;
-  font-weight: 700;
+.logo-img {
+  height: 58px;
+  width: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  filter: drop-shadow(0 2px 6px rgba(255, 153, 0, 0.35));
+}
+
+.brand-name {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
 }
 
 .header-left,
 .header-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 22px;
 }
 
-.logo-img {
-  height: 100px;
-  width: 100px;
-  border-radius: 50%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 10);
+.header-link {
+  text-decoration: none;
+  color: #e8e8e8;
+  font-weight: 600;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.header-link:hover {
+  color: #ff9800;
+}
+
+.header-active {
+  color: #ff9800;
+}
+
+.register-link {
+  text-decoration: none;
+  background: #ff9800;
+  color: #111111;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.register-link:hover {
+  background: #ffb13b;
 }

@@ -1,0 +1,32 @@
+.matches-page {
+  padding: 30px;
+}
+
+.matches-title {
+  margin-bottom: 24px;
+  font-size: 32px;
+}
+
+.matches-filter {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.match-search-input,
+.district-select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.match-search-input {
+  min-width: 240px;
+}
+
+.matches-grid {
+  display: grid;
+  gap: 18px;
+}

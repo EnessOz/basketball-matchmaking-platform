@@ -17,7 +17,11 @@
       "indoor": false,
       "rim_count": 2
     },
-    "tags": ["deniz manzarası", "kalabalık", "açık hava"],
+    "tags": [
+      "deniz manzarası",
+      "kalabalık",
+      "açık hava"
+    ],
     "rating": 4.5,
     "createdBy": "admin"
   },
@@ -39,7 +43,41 @@
       "indoor": false,
       "rim_count": 1
     },
-    "tags": ["park", "sessiz", "basit saha", "eski", "açık hava"],
+    "tags": [
+      "park",
+      "sessiz",
+      "basit saha",
+      "eski",
+      "açık hava"
+    ],
+    "rating": 2.7,
+    "createdBy": "admin"
+  },
+  {
+    "id": 3,
+    "name": "İlkadım Anneler Parkı Basket Sahası",
+    "district": "İlkadım",
+    "city": "Samsun",
+    "location": {
+      "lat": 41.2838063402531,
+      "lng": 36.33123164770165,
+      "address": "Ali Baba Parkı İçinde"
+    },
+    "images": [
+      "https://images.unsplash.com/photo-1547347298-4074fc3086f0"
+    ],
+    "features": {
+      "lighting": false,
+      "indoor": false,
+      "rim_count": 1
+    },
+    "tags": [
+      "park",
+      "gürültülü",
+      "basit saha",
+      "eski",
+      "açık hava"
+    ],
     "rating": 3.8,
     "createdBy": "admin"
   }
