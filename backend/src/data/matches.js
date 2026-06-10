@@ -1,0 +1,31 @@
+const matches = [
+  {
+    id: 1,
+    courtName: "Atakum Sahil Basket Sahası",
+    district: "Atakum",
+    date: "2026-06-12",
+    time: "18:00",
+    playerCount: 10,
+    description: "Herkes katılabilir. Dostluk maçı.",
+  },
+  {
+    id: 2,
+    courtName: "İlkadım Ali Baba Basket Sahası",
+    district: "İlkadım",
+    date: "2026-06-13",
+    time: "20:00",
+    playerCount: 8,
+    description: "Eksik oyuncu aranıyor.",
+  },
+  {
+    id: 3,
+    courtName: "Canik Belediyesi Basket Sahası",
+    district: "Canik",
+    date: "2026-06-15",
+    time: "19:30",
+    playerCount: 6,
+    description: "Yarı saha maç yapılacak.",
+  },
+];
+
+module.exports = matches;

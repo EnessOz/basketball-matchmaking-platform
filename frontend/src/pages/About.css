@@ -1,0 +1,33 @@
+.about-page {
+  padding: 30px;
+}
+
+.about-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.about-container h1 {
+  margin-bottom: 20px;
+}
+
+.about-container p {
+  margin-bottom: 16px;
+  line-height: 1.7;
+}
+
+.about-section {
+  margin-top: 30px;
+}
+
+.about-section h2 {
+  margin-bottom: 12px;
+}
+
+.about-section ul {
+  padding-left: 20px;
+}
+
+.about-section li {
+  margin-bottom: 8px;
+}

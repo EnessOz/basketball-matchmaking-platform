@@ -1,27 +1,39 @@
 # Basketball Matchmaking Platform
 
-A web platform that helps basketball players find courts, organize games, and connect with other players.
+Basketball Matchmaking Platform is a personal project built to help basketball players find courts, create games, and join existing matches.
 
-## Features
+The main goal is to make it easier for players to organize real-world basketball games without relying on large social media groups or messaging apps.
 
-### Current Features
+---
 
-* Basketball court listing
+## Current Features
+
+### Courts
+
+* Court listing
 * District-based filtering
+* Court search
 * Court detail pages
+* Dynamic routing for court details
+
+### Matches
+
+* Match listing
+* Match search
+* District-based filtering
+* Match detail pages
+* Join match simulation
+* Match creation form
+
+### General
+
 * React Router navigation
-* Responsive application structure
-* Local court database using JSON seed data
-
-### Planned Features
-
-* Interactive map integration
-* User registration and authentication
-* Favorite courts
-* Match creation
-* Real-time matchmaking
-* Notifications
-* Player profiles
+* Responsive page structure
+* Header and footer navigation
+* About page
+* Contact page
+* Login page
+* Register page
 
 ---
 
@@ -33,7 +45,7 @@ A web platform that helps basketball players find courts, organize games, and co
 * JavaScript
 * React Router
 
-### Backend (Planned)
+### Backend
 
 * Node.js
 * Express.js
@@ -42,46 +54,73 @@ A web platform that helps basketball players find courts, organize games, and co
 
 * MongoDB
 
+### Image Hosting (Planned)
+
+* Cloudinary
+
 ---
 
-## Current Status
+## Backend Progress
 
-The project is currently in the MVP development phase.
+The backend setup has been initialized using Express.
 
-### Implemented
+Current API endpoints:
 
-* Project architecture setup
-* React Router configuration
-* Header component
-* Footer component
-* CourtCard component
-* Court JSON data model
-* Court listing page
-* District filtering system
-* Dynamic court detail routing
-* Court detail page
+* GET /courts
+* GET /matches
 
-### In Progress
+At the moment, endpoints return local data stored inside the backend project. These endpoints will later be connected to MongoDB.
 
-* UI improvements
-* Court detail enhancements
+---
 
-### Planned
+## Current Project Status
 
-* Backend API
+The project is currently in MVP development.
+
+Completed:
+
+* Frontend architecture
+* Routing system
+* Court system
+* Match system
+* Search and filtering
+* Match detail pages
+* Match creation flow
+* Express backend setup
+* Initial API endpoints
+
+Currently Working On:
+
+* Connecting frontend to backend APIs
 * MongoDB integration
 * Authentication system
+
+Planned Features:
+
+* User accounts
 * Favorite courts
-* Match creation
+* Match participation tracking
 * Real-time matchmaking
-* Notification system
+* Notifications
+* Player profiles
+* Interactive maps
 
 ---
 
 ## Installation
 
+### Frontend
+
 ```bash
 cd frontend
 npm install
 npm start
+```
+
+### Backend
+
+```bash
+cd backend
+npm install
+node src/server.js
 ```

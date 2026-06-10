@@ -1,0 +1,32 @@
+.contact-page {
+  padding: 30px;
+}
+
+.contact-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.contact-container h1 {
+  margin-bottom: 20px;
+}
+
+.contact-container > p {
+  margin-bottom: 24px;
+}
+
+.contact-card {
+  padding: 18px;
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: white;
+}
+
+.contact-card h2 {
+  margin-bottom: 8px;
+}
+
+.contact-card p {
+  color: #555;
+}
