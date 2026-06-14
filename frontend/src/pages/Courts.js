@@ -1,11 +1,18 @@
-import React, { useState } from "react";
-import courtsData from "../data/courts.json";
+import React, { useEffect, useState } from "react";
 import CourtCard from "../components/courtCart/CourtCard";
 import "./Courts.css";
 
 const Courts = () => {
+  const [courtsData, setCourtsData] = useState([]);
   const [district, setDistrict] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:5000/courts")
+      .then((response) => response.json())
+      .then((data) => setCourtsData(data))
+      .catch((error) => console.error(error));
+  }, []);
 
   const districts = [...new Set(courtsData.map((c) => c.district))];
 
@@ -39,6 +46,7 @@ const Courts = () => {
           onChange={(e) => setDistrict(e.target.value)}
         >
           <option value="all">Tümü</option>
+
           {districts.map((d) => (
             <option key={d} value={d}>
               {d}

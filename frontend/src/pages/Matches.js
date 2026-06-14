@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MatchCard from "../components/MatchCard/MatchCard";
-import matchesData from "../data/matches.json";
 import "./Matches.css";
 
 const Matches = () => {
+  const [matchesData, setMatchesData] = useState([]);
   const [district, setDistrict] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:5000/matches")
+      .then((response) => response.json())
+      .then((data) => setMatchesData(data))
+      .catch((error) => console.error(error));
+  }, []);
 
   const districts = [...new Set(matchesData.map((match) => match.district))];
 

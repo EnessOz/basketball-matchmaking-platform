@@ -18,22 +18,37 @@ const CreateMatch = () => {
 
   const court = courtsData.find((court) => court.id === Number(id));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const match = {
       courtId: court.id,
       courtName: court.name,
+      district: court.district,
       date,
       time,
-      playerCount,
+      playerCount: Number(playerCount),
       description,
     };
 
-    setCreatedMatch(match);
+    try {
+      const response = await fetch("http://localhost:5000/matches", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(match),
+      });
 
-    console.log("Match Created:");
-    console.log(match);
+      const data = await response.json();
+
+      setCreatedMatch(data);
+
+      console.log("Match Created:");
+      console.log(data);
+    } catch (error) {
+      console.error("Match could not be created:", error);
+    }
   };
 
   if (!court) {
