@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const mongoose = require("mongoose");
 const Court = require("../models/Court");
-const courts = require("../data/courts");
+const courts = require("./courts");
 
 const seedCourts = async () => {
   try {

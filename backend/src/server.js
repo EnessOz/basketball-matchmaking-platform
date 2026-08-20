@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 
 const courtRoutes = require("./routes/courtRoutes");
 const matchRoutes = require("./routes/matchRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 
 app.use("/courts", courtRoutes);
 app.use("/matches", matchRoutes);
+app.use("/auth", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

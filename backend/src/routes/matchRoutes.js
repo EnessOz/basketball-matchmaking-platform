@@ -8,9 +8,11 @@ const {
   joinMatch,
 } = require("../controllers/matchController");
 
+const authMiddleware = require("../middleware/authMiddleware");
+
 router.get("/", getAllMatches);
 
-router.post("/", createMatch);
+router.post("/", authMiddleware, createMatch);
 
 router.patch("/:id/join", joinMatch);
 

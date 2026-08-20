@@ -14,7 +14,10 @@ const getAllMatches = async (req, res) => {
 
 const createMatch = async (req, res) => {
   try {
-    const newMatch = await Match.create(req.body);
+    const newMatch = await Match.create({
+      ...req.body,
+      createdBy: req.userId,
+    });
 
     res.status(201).json(newMatch);
   } catch (error) {

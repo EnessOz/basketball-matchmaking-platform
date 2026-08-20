@@ -1,40 +1,47 @@
 const mongoose = require("mongoose");
 
 const matchSchema = new mongoose.Schema({
-    courtId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Court",
-        required: true,
-    },
+  courtId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Court",
+    required: true,
+  },
 
-    courtName: {
-        type: String,
-        required: true,
-    },
+  courtName: {
+    type: String,
+    required: true,
+  },
 
-    district: {
-        type: String,
-        required: true,
-    },
+  district: {
+    type: String,
+    required: true,
+  },
 
-    date: {
-        type: String,
-        required: true,
-    },
+  date: {
+    type: String,
+    required: true,
+  },
 
-    time: {
-        type: String,
-        required: true,
-    },
+  time: {
+    type: String,
+    required: true,
+  },
 
-    playerCount: {
-        type: Number,
-        required: true,
-    },
+  playerCount: {
+    type: Number,
+    required: true,
+  },
 
-    description: {
-        type: String,
-        required: true,
-    },
+  description: {
+    type: String,
+    required: true,
+  },
+
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
+
 module.exports = mongoose.model("Match", matchSchema);
