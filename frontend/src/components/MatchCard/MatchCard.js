@@ -5,7 +5,7 @@ import "./MatchCard.css";
 const MatchCard = ({ match }) => {
   return (
     <Link
-      to={`/matches/${match.id}`}
+      to={`/matches/${match._id}`}
       className="match-card-link"
     >
       <div className="match-card">

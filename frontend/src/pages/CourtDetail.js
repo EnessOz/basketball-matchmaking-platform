@@ -1,12 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import courtsData from "../data/courts.json";
 import "./CourtDetail.css";
 
 const CourtDetail = () => {
   const { id } = useParams();
 
-  const court = courtsData.find((court) => court.id === Number(id));
+  const [court, setCourt] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/courts")
+      .then((response) => response.json())
+      .then((data) => {
+        const foundCourt = data.find((court) => court._id === id);
+
+        setCourt(foundCourt);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Court could not be loaded:", error);
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="court-detail-page">
+        <p>Saha yükleniyor...</p>
+      </div>
+    );
+  }
 
   if (!court) {
     return (
@@ -35,7 +58,9 @@ const CourtDetail = () => {
             {court.district} - {court.city}
           </p>
 
-          <p className="court-detail-address">{court.location.address}</p>
+          <p className="court-detail-address">
+            {court.location.address}
+          </p>
 
           <div className="court-detail-info">
             <p>⭐ {court.rating}</p>
@@ -68,7 +93,7 @@ const CourtDetail = () => {
 
             <Link
               className="court-detail-button primary"
-              to={`/courts/${court.id}/create-match`}
+              to={`/courts/${court._id}/create-match`}
             >
               Bu Sahada Maç Oluştur
             </Link>

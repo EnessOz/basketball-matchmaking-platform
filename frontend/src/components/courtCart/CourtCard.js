@@ -4,7 +4,7 @@ import "./CourtCard.css";
 
 const CourtCard = ({ court }) => {
   return (
-    <Link to={`/courts/${court.id}`} className="court-card-link">
+    <Link to={`/courts/${court._id}`} className="court-card-link">
       <div className="court-card">
         <img
           className="court-image"

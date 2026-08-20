@@ -1,17 +1,64 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import matchesData from "../data/matches.json";
 import "./MatchDetail.css";
 
 const MatchDetail = () => {
   const { id } = useParams();
 
-  const match = matchesData.find((match) => match.id === Number(id));
+  const [match, setMatch] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [joined, setJoined] = useState(false);
-  const [currentPlayerCount, setCurrentPlayerCount] = useState(
-    match ? Number(match.playerCount) : 0
-  );
+  const [currentPlayerCount, setCurrentPlayerCount] = useState(0);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/matches")
+      .then((response) => response.json())
+      .then((data) => {
+        const foundMatch = data.find((match) => match._id === id);
+
+        setMatch(foundMatch);
+
+        if (foundMatch) {
+          setCurrentPlayerCount(Number(foundMatch.playerCount));
+        }
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Match could not be loaded:", error);
+        setLoading(false);
+      });
+  }, [id]);
+
+  const handleJoinMatch = async () => {
+    if (joined) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/matches/${id}/join`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      const updatedMatch = await response.json();
+
+      setMatch(updatedMatch);
+      setCurrentPlayerCount(updatedMatch.playerCount);
+      setJoined(true);
+    } catch (error) {
+      console.error("Could not join match:", error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="match-detail-page">
+        <p>Maç yükleniyor...</p>
+      </div>
+    );
+  }
 
   if (!match) {
     return (
@@ -21,13 +68,6 @@ const MatchDetail = () => {
       </div>
     );
   }
-
-  const handleJoinMatch = () => {
-    if (joined) return;
-
-    setCurrentPlayerCount(currentPlayerCount + 1);
-    setJoined(true);
-  };
 
   return (
     <div className="match-detail-page">

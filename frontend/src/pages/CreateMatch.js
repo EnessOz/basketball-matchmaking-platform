@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import courtsData from "../data/courts.json";
 import "./CreateMatch.css";
 
 const CreateMatch = () => {
   const { id } = useParams();
+
+  const [court, setCourt] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -16,13 +18,26 @@ const CreateMatch = () => {
   const today = now.toISOString().split("T")[0];
   const currentTime = now.toTimeString().slice(0, 5);
 
-  const court = courtsData.find((court) => court.id === Number(id));
+  useEffect(() => {
+    fetch("http://localhost:5000/courts")
+      .then((response) => response.json())
+      .then((data) => {
+        const foundCourt = data.find((court) => court._id === id);
+
+        setCourt(foundCourt);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Court could not be loaded:", error);
+        setLoading(false);
+      });
+  }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const match = {
-      courtId: court.id,
+      courtId: court._id,
       courtName: court.name,
       district: court.district,
       date,
@@ -50,6 +65,14 @@ const CreateMatch = () => {
       console.error("Match could not be created:", error);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="create-match-page">
+        <p>Saha yükleniyor...</p>
+      </div>
+    );
+  }
 
   if (!court) {
     return (
