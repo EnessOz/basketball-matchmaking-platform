@@ -13,6 +13,7 @@ const CreateMatch = () => {
   const [playerCount, setPlayerCount] = useState("");
   const [description, setDescription] = useState("");
   const [createdMatch, setCreatedMatch] = useState(null);
+  const [message, setMessage] = useState("");
 
   const now = new Date();
   const today = now.toISOString().split("T")[0];
@@ -36,6 +37,13 @@ const CreateMatch = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setMessage("Maç oluşturmak için giriş yapmalısın.");
+      return;
+    }
+
     const match = {
       courtId: court._id,
       courtName: court.name,
@@ -51,18 +59,26 @@ const CreateMatch = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(match),
       });
 
       const data = await response.json();
 
+      if (!response.ok) {
+        setMessage(data.message || "Maç oluşturulamadı");
+        return;
+      }
+
       setCreatedMatch(data);
+      setMessage("");
 
       console.log("Match Created:");
       console.log(data);
     } catch (error) {
       console.error("Match could not be created:", error);
+      setMessage("Sunucuya bağlanılamadı");
     }
   };
 
@@ -145,6 +161,12 @@ const CreateMatch = () => {
 
           <button type="submit">Maçı Oluştur</button>
         </form>
+
+        {message && (
+          <p className="create-match-message">
+            {message}
+          </p>
+        )}
 
         {createdMatch && (
           <div className="created-match-card">

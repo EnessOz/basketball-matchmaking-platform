@@ -1,39 +1,27 @@
 # Basketball Matchmaking Platform
 
-Basketball Matchmaking Platform is a personal project built to help basketball players find courts, create games, and join existing matches.
+Basketball Matchmaking Platform is a full-stack web application for finding basketball courts, creating local games, and joining existing matches.
 
-The main goal is to make it easier for players to organize real-world basketball games without relying on large social media groups or messaging apps.
+The project is currently under active development.
 
 ---
 
-## Current Features
+## Features
 
-### Courts
-
-* Court listing
-* District-based filtering
-* Court search
-* Court detail pages
-* Dynamic routing for court details
-
-### Matches
-
-* Match listing
-* Match search
-* District-based filtering
-* Match detail pages
-* Join match simulation
-* Match creation form
-
-### General
-
-* React Router navigation
-* Responsive page structure
-* Header and footer navigation
-* About page
-* Contact page
-* Login page
-* Register page
+- Basketball court listing
+- Court search and district filtering
+- Court detail pages
+- Match listing and filtering
+- Match creation
+- Match detail pages
+- User registration and login
+- Password hashing with bcrypt
+- JWT authentication
+- Protected routes
+- User-specific match ownership
+- My Matches page
+- Users can delete their own matches
+- MongoDB database integration
 
 ---
 
@@ -41,69 +29,40 @@ The main goal is to make it easier for players to organize real-world basketball
 
 ### Frontend
 
-* React
-* JavaScript
-* React Router
+- React
+- JavaScript
+- React Router
+- CSS
 
 ### Backend
 
-* Node.js
-* Express.js
-
-### Database (Planned)
-
-* MongoDB
-
-### Image Hosting (Planned)
-
-* Cloudinary
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT
+- bcrypt
 
 ---
 
-## Backend Progress
+## Current Development
 
-The backend setup has been initialized using Express.
+Currently working on:
 
-Current API endpoints:
+- User-based match participation
+- Preventing duplicate participation
+- Leaving matches
+- Joined matches
+- Player profiles
+- Favorite courts
 
-* GET /courts
-* GET /matches
+Planned for later:
 
-At the moment, endpoints return local data stored inside the backend project. These endpoints will later be connected to MongoDB.
-
----
-
-## Current Project Status
-
-The project is currently in MVP development.
-
-Completed:
-
-* Frontend architecture
-* Routing system
-* Court system
-* Match system
-* Search and filtering
-* Match detail pages
-* Match creation flow
-* Express backend setup
-* Initial API endpoints
-
-Currently Working On:
-
-* Connecting frontend to backend APIs
-* MongoDB integration
-* Authentication system
-
-Planned Features:
-
-* User accounts
-* Favorite courts
-* Match participation tracking
-* Real-time matchmaking
-* Notifications
-* Player profiles
-* Interactive maps
+- Interactive maps
+- Notifications
+- Real-time features
+- Image hosting
+- Deployment
 
 ---
 
@@ -124,3 +83,12 @@ cd backend
 npm install
 node src/server.js
 ```
+
+Create a `.env` file inside the backend directory:
+
+```env
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+```
+
+Do not commit the `.env` file.

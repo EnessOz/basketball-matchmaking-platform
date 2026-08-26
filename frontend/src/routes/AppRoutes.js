@@ -6,6 +6,7 @@ import CourtDetail from "../pages/CourtDetail";
 import CreateMatch from "../pages/CreateMatch";
 import Matches from "../pages/Matches";
 import MatchDetail from "../pages/MatchDetail";
+import MyMatches from "../pages/MyMatches";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
 import Register from "../pages/Register";
@@ -22,6 +23,7 @@ const AppRoutes = () => {
 
       <Route path="/matches" element={<Matches />} />
       <Route path="/matches/:id" element={<MatchDetail />} />
+      <Route path="/my-matches" element={<MyMatches />} />
 
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />

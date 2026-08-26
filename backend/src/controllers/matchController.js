@@ -12,6 +12,20 @@ const getAllMatches = async (req, res) => {
   }
 };
 
+const getMyMatches = async (req, res) => {
+  try {
+    const matches = await Match.find({
+      createdBy: req.userId,
+    });
+
+    res.json(matches);
+  } catch (error) {
+    res.status(500).json({
+      message: "Maçların alınamadı",
+    });
+  }
+};
+
 const createMatch = async (req, res) => {
   try {
     const newMatch = await Match.create({
@@ -49,8 +63,38 @@ const joinMatch = async (req, res) => {
   }
 };
 
+const deleteMatch = async (req, res) => {
+  try {
+    const match = await Match.findById(req.params.id);
+
+    if (!match) {
+      return res.status(404).json({
+        message: "Maç bulunamadı",
+      });
+    }
+
+    if (match.createdBy.toString() !== req.userId) {
+      return res.status(403).json({
+        message: "Bu maçı silme yetkin yok",
+      });
+    }
+
+    await match.deleteOne();
+
+    res.json({
+      message: "Maç başarıyla silindi",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Maç silinemedi",
+    });
+  }
+};
+
 module.exports = {
   getAllMatches,
+  getMyMatches,
   createMatch,
   joinMatch,
+  deleteMatch,
 };
