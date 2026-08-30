@@ -53,3 +53,24 @@
   background: #999;
   cursor: not-allowed;
 }
+
+.match-participant-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.participation-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.participation-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  display: inline-block;
+}

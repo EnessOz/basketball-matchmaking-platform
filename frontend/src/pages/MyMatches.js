@@ -2,39 +2,69 @@ import React, { useEffect, useState } from "react";
 import "./MyMatches.css";
 
 const MyMatches = () => {
-  const [matches, setMatches] = useState([]);
+  const [createdMatches, setCreatedMatches] = useState([]);
+  const [joinedMatches, setJoinedMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
 
-    if (!token) {
+    if (!token || !user) {
       setMessage("Maçlarını görmek için giriş yapmalısın.");
       setLoading(false);
       return;
     }
 
-    fetch("http://localhost:5000/matches/my", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(async (response) => {
-        const data = await response.json();
+    const loadMatches = async () => {
+      try {
+        const [createdResponse, joinedResponse] = await Promise.all([
+          fetch("http://localhost:5000/matches/my", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
 
-        if (!response.ok) {
-          throw new Error(data.message || "Maçlar alınamadı");
+          fetch("http://localhost:5000/matches/joined", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ]);
+
+        const createdData = await createdResponse.json();
+        const joinedData = await joinedResponse.json();
+
+        if (!createdResponse.ok) {
+          throw new Error(
+            createdData.message || "Oluşturduğun maçlar alınamadı"
+          );
         }
 
-        setMatches(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("My matches could not be loaded:", error);
+        if (!joinedResponse.ok) {
+          throw new Error(
+            joinedData.message || "Katıldığın maçlar alınamadı"
+          );
+        }
+
+        setCreatedMatches(createdData);
+
+        const onlyJoinedMatches = joinedData.filter(
+          (match) => match.createdBy !== user.id
+        );
+
+        setJoinedMatches(onlyJoinedMatches);
+      } catch (error) {
+        console.error("Matches could not be loaded:", error);
         setMessage(error.message);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    loadMatches();
   }, []);
 
   const handleDeleteMatch = async (matchId) => {
@@ -71,7 +101,7 @@ const MyMatches = () => {
         return;
       }
 
-      setMatches((currentMatches) =>
+      setCreatedMatches((currentMatches) =>
         currentMatches.filter((match) => match._id !== matchId)
       );
 
@@ -97,19 +127,23 @@ const MyMatches = () => {
 
         {message && <p>{message}</p>}
 
-        {matches.length === 0 && (
+        <h2>Oluşturduğum Maçlar</h2>
+
+        {createdMatches.length === 0 && (
           <p>Henüz oluşturduğun bir maç yok.</p>
         )}
 
         <div className="my-matches-list">
-          {matches.map((match) => (
+          {createdMatches.map((match) => (
             <div className="my-match-card" key={match._id}>
               <h2>{match.courtName}</h2>
 
               <p>📍 {match.district}</p>
               <p>📅 {match.date}</p>
               <p>🕒 {match.time}</p>
-              <p>🏀 {match.playerCount} Oyuncu</p>
+              <p>
+                🏀 {match.participants?.length || 0} Katılımcı
+              </p>
 
               <p>{match.description}</p>
 
@@ -119,6 +153,29 @@ const MyMatches = () => {
               >
                 Maçı Sil
               </button>
+            </div>
+          ))}
+        </div>
+
+        <h2>Katıldığım Maçlar</h2>
+
+        {joinedMatches.length === 0 && (
+          <p>Henüz katıldığın bir maç yok.</p>
+        )}
+
+        <div className="my-matches-list">
+          {joinedMatches.map((match) => (
+            <div className="my-match-card" key={match._id}>
+              <h2>{match.courtName}</h2>
+
+              <p>📍 {match.district}</p>
+              <p>📅 {match.date}</p>
+              <p>🕒 {match.time}</p>
+              <p>
+                🏀 {match.participants?.length || 0} Katılımcı
+              </p>
+
+              <p>{match.description}</p>
             </div>
           ))}
         </div>

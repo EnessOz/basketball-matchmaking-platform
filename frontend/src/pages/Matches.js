@@ -7,6 +7,9 @@ const Matches = () => {
   const [district, setDistrict] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
+  const storedUser = localStorage.getItem("user");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+
   useEffect(() => {
     fetch("http://localhost:5000/matches")
       .then((response) => response.json())
@@ -56,9 +59,19 @@ const Matches = () => {
       </div>
 
       <div className="matches-grid">
-        {filteredMatches.map((match) => (
-          <MatchCard key={match.id} match={match} />
-        ))}
+        {filteredMatches.map((match) => {
+          const isCreator =
+            user &&
+            match.createdBy?.toString() === user.id;
+
+          return (
+            <MatchCard
+              key={match._id}
+              match={match}
+              isCreator={isCreator}
+            />
+          );
+        })}
       </div>
     </div>
   );

@@ -10,7 +10,6 @@ const CreateMatch = () => {
 
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [playerCount, setPlayerCount] = useState("");
   const [description, setDescription] = useState("");
   const [createdMatch, setCreatedMatch] = useState(null);
   const [message, setMessage] = useState("");
@@ -50,7 +49,6 @@ const CreateMatch = () => {
       district: court.district,
       date,
       time,
-      playerCount: Number(playerCount),
       description,
     };
 
@@ -137,19 +135,6 @@ const CreateMatch = () => {
           </label>
 
           <label>
-            Oyuncu Sayısı
-            <input
-              type="number"
-              min="1"
-              max="20"
-              placeholder="Örn: 10"
-              required
-              value={playerCount}
-              onChange={(e) => setPlayerCount(e.target.value)}
-            />
-          </label>
-
-          <label>
             Açıklama
             <textarea
               placeholder="Maç hakkında kısa bilgi yaz..."
@@ -185,7 +170,8 @@ const CreateMatch = () => {
             </p>
 
             <p>
-              <strong>Oyuncu Sayısı:</strong> {createdMatch.playerCount}
+              <strong>Katılımcı Sayısı:</strong>{" "}
+              {createdMatch.participants?.length || 0}
             </p>
 
             <p>

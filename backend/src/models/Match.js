@@ -27,11 +27,6 @@ const matchSchema = new mongoose.Schema({
     required: true,
   },
 
-  playerCount: {
-    type: Number,
-    required: true,
-  },
-
   description: {
     type: String,
     required: true,
@@ -42,6 +37,13 @@ const matchSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+
+  participants: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Match", matchSchema);
