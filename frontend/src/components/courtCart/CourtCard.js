@@ -2,10 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./CourtCard.css";
 
-const CourtCard = ({ court }) => {
+const CourtCard = ({ court, isFavorite }) => {
   return (
     <Link to={`/courts/${court._id}`} className="court-card-link">
       <div className="court-card">
+        {isFavorite && (
+          <div className="court-favorite-badge">
+            ⭐ Favori
+          </div>
+        )}
+
         <img
           className="court-image"
           src={court.images[0]}

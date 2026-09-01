@@ -4,8 +4,12 @@ import "./Courts.css";
 
 const Courts = () => {
   const [courtsData, setCourtsData] = useState([]);
+  const [favoriteCourts, setFavoriteCourts] = useState([]);
   const [district, setDistrict] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetch("http://localhost:5000/courts")
@@ -13,6 +17,24 @@ const Courts = () => {
       .then((data) => setCourtsData(data))
       .catch((error) => console.error(error));
   }, []);
+
+  useEffect(() => {
+    if (!token) {
+      setFavoriteCourts([]);
+      return;
+    }
+
+    fetch("http://localhost:5000/users/favorites", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setFavoriteCourts(data))
+      .catch((error) => {
+        console.error("Favorite courts could not be loaded:", error);
+      });
+  }, [token]);
 
   const districts = [...new Set(courtsData.map((c) => c.district))];
 
@@ -24,12 +46,43 @@ const Courts = () => {
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
 
-    return matchesDistrict && matchesSearch;
+    const isFavorite = favoriteCourts.some(
+      (favoriteCourt) => favoriteCourt._id === court._id
+    );
+
+    const matchesTab =
+      activeTab === "all" || isFavorite;
+
+    return (
+      matchesDistrict &&
+      matchesSearch &&
+      matchesTab
+    );
   });
 
   return (
     <div className="courts-page">
       <h1 className="courts-title">Basket Sahaları</h1>
+
+      <div className="courts-tabs">
+        <button
+          className={`courts-tab ${
+            activeTab === "all" ? "active" : ""
+          }`}
+          onClick={() => setActiveTab("all")}
+        >
+          Tüm Sahalar
+        </button>
+
+        <button
+          className={`courts-tab ${
+            activeTab === "favorites" ? "active" : ""
+          }`}
+          onClick={() => setActiveTab("favorites")}
+        >
+          Favori Sahalarım
+        </button>
+      </div>
 
       <div className="courts-filter">
         <input
@@ -56,9 +109,19 @@ const Courts = () => {
       </div>
 
       <div className="courts-grid">
-        {filteredCourts.map((court) => (
-          <CourtCard key={court.id} court={court} />
-        ))}
+        {filteredCourts.map((court) => {
+          const isFavorite = favoriteCourts.some(
+            (favoriteCourt) => favoriteCourt._id === court._id
+          );
+
+          return (
+            <CourtCard
+              key={court._id}
+              court={court}
+              isFavorite={isFavorite}
+            />
+          );
+        })}
       </div>
     </div>
   );

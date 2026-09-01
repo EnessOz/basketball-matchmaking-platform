@@ -7,6 +7,10 @@ const CourtDetail = () => {
 
   const [court, setCourt] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteMessage, setFavoriteMessage] = useState("");
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetch("http://localhost:5000/courts")
@@ -22,6 +26,65 @@ const CourtDetail = () => {
         setLoading(false);
       });
   }, [id]);
+
+  useEffect(() => {
+    if (!token) return;
+
+    fetch("http://localhost:5000/users/favorites", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const favoriteExists = data.some(
+          (favoriteCourt) => favoriteCourt._id === id
+        );
+
+        setIsFavorite(favoriteExists);
+      })
+      .catch((error) => {
+        console.error("Favorite courts could not be loaded:", error);
+      });
+  }, [id, token]);
+
+  const handleFavorite = async () => {
+    if (!token) {
+      setFavoriteMessage("Favorilere eklemek için giriş yapmalısın.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/users/favorites/${id}`,
+        {
+          method: isFavorite ? "DELETE" : "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setFavoriteMessage(
+          data.message || "Favori işlemi gerçekleştirilemedi."
+        );
+        return;
+      }
+
+      setIsFavorite(!isFavorite);
+      setFavoriteMessage(
+        isFavorite
+          ? "Saha favorilerden çıkarıldı."
+          : "Saha favorilere eklendi."
+      );
+    } catch (error) {
+      console.error("Favorite action failed:", error);
+      setFavoriteMessage("Sunucuya bağlanılamadı.");
+    }
+  };
 
   if (loading) {
     return (
@@ -77,9 +140,20 @@ const CourtDetail = () => {
             ))}
           </div>
 
+          {favoriteMessage && (
+            <p className="court-favorite-message">
+              {favoriteMessage}
+            </p>
+          )}
+
           <div className="court-detail-actions">
-            <button className="court-detail-button">
-              Favorilere Ekle
+            <button
+              className="court-detail-button"
+              onClick={handleFavorite}
+            >
+              {isFavorite
+                ? "Favorilerden Çıkar"
+                : "Favorilere Ekle"}
             </button>
 
             <a

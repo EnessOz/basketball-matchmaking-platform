@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Header.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/LogoDetay1.png";
@@ -6,16 +6,32 @@ import logo from "../../assets/LogoDetay1.png";
 const Header = () => {
   const navigate = useNavigate();
 
-  const storedUser = localStorage.getItem("user");
-  const user = storedUser ? JSON.parse(storedUser) : null;
+  const getStoredUser = () => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  };
+
+  const [user, setUser] = useState(getStoredUser());
+
+  useEffect(() => {
+    const handleAuthChange = () => {
+      setUser(getStoredUser());
+    };
+
+    window.addEventListener("authChanged", handleAuthChange);
+
+    return () => {
+      window.removeEventListener("authChanged", handleAuthChange);
+    };
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    navigate("/login");
+    setUser(null);
 
-    window.location.reload();
+    navigate("/login");
   };
 
   return (

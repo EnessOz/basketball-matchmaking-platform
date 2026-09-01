@@ -6,8 +6,11 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
-
   const [message, setMessage] = useState("");
+
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    Boolean(localStorage.getItem("token"))
+  );
 
   const handleRegister = async () => {
     if (password !== passwordAgain) {
@@ -46,6 +49,34 @@ const Register = () => {
       setMessage("Sunucuya bağlanılamadı");
     }
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    window.dispatchEvent(new Event("authChanged"));
+
+    setIsLoggedIn(false);
+    setMessage("");
+  };
+
+  if (isLoggedIn) {
+    return (
+      <div className="register-container">
+        <div className="register-card">
+          <h1>Kayıt Ol</h1>
+
+          <p className="register-message">
+            Yeni bir hesap oluşturmak için önce mevcut hesabından çıkış yapmalısın.
+          </p>
+
+          <button onClick={handleLogout}>
+            Çıkış Yap
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="register-container">
