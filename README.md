@@ -11,17 +11,23 @@ The project is currently under active development.
 - Basketball court listing
 - Court search and district filtering
 - Court detail pages
+- Favorite courts
 - Match listing and filtering
 - Match creation
 - Match detail pages
+- Joining and leaving matches
+- User-specific match ownership
+- My Matches page
+- Users can delete their own matches
 - User registration and login
 - Password hashing with bcrypt
 - JWT authentication
 - Protected routes
-- User-specific match ownership
-- My Matches page
-- Users can delete their own matches
 - MongoDB database integration
+- Notifications for new matches on favorite courts
+- Accept and reject match notifications
+- Global notification mute
+- Notification bell with unread count
 
 ---
 
@@ -49,17 +55,18 @@ The project is currently under active development.
 
 Currently working on:
 
-- User-based match participation
-- Preventing duplicate participation
-- Leaving matches
-- Joined matches
+- Notification spam protection
+- Match creation rate limiting and cooldown
+- Notification center improvements
+- Match lifecycle and expiration
 - Player profiles
-- Favorite courts
 
 Planned for later:
 
+- Match reminders
+- Match check-in and attendance
+- Trust Score
 - Interactive maps
-- Notifications
 - Real-time features
 - Image hosting
 - Deployment

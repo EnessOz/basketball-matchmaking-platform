@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./Header.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/LogoDetay1.png";
@@ -12,24 +12,90 @@ const Header = () => {
   };
 
   const [user, setUser] = useState(getStoredUser());
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const loadUnreadCount = useCallback(async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setUnreadCount(0);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/notifications",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        return;
+      }
+
+      const notifications = await response.json();
+
+      const count = notifications.filter(
+        (notification) =>
+          notification.status === "pending" &&
+          notification.isRead === false
+      ).length;
+
+      setUnreadCount(count);
+    } catch (error) {
+      console.error(
+        "Header notification count error:",
+        error
+      );
+    }
+  }, []);
 
   useEffect(() => {
     const handleAuthChange = () => {
       setUser(getStoredUser());
+      loadUnreadCount();
     };
 
-    window.addEventListener("authChanged", handleAuthChange);
+    const handleNotificationChange = () => {
+      loadUnreadCount();
+    };
+
+    window.addEventListener(
+      "authChanged",
+      handleAuthChange
+    );
+
+    window.addEventListener(
+      "notificationsChanged",
+      handleNotificationChange
+    );
+
+    loadUnreadCount();
 
     return () => {
-      window.removeEventListener("authChanged", handleAuthChange);
+      window.removeEventListener(
+        "authChanged",
+        handleAuthChange
+      );
+
+      window.removeEventListener(
+        "notificationsChanged",
+        handleNotificationChange
+      );
     };
-  }, []);
+  }, [loadUnreadCount]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
     setUser(null);
+    setUnreadCount(0);
+
+    window.dispatchEvent(new Event("authChanged"));
 
     navigate("/login");
   };
@@ -98,6 +164,25 @@ const Header = () => {
       <div className="header-right">
         {user ? (
           <>
+            <NavLink
+              to="/notifications"
+              className="notification-link"
+              aria-label="Bildirimler"
+              title="Bildirimler"
+            >
+              <span className="notification-bell">
+                🔔
+              </span>
+
+              {unreadCount > 0 && (
+                <span className="notification-badge">
+                  {unreadCount > 99
+                    ? "99+"
+                    : unreadCount}
+                </span>
+              )}
+            </NavLink>
+
             <span className="header-link">
               {user.username}
             </span>

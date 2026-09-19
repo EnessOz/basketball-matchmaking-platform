@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema({
       ref: "Court",
     },
   ],
+
+  notificationsMutedUntil: {
+    type: Date,
+    default: null,
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);

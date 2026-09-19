@@ -11,6 +11,7 @@ import About from "../pages/About";
 import Contact from "../pages/Contact";
 import Register from "../pages/Register";
 import Login from "../pages/Login";
+import Notifications from "../pages/Notifications";
 
 const AppRoutes = () => {
   return (
@@ -24,6 +25,8 @@ const AppRoutes = () => {
       <Route path="/matches" element={<Matches />} />
       <Route path="/matches/:id" element={<MatchDetail />} />
       <Route path="/my-matches" element={<MyMatches />} />
+
+      <Route path="/notifications" element={<Notifications />} />
 
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />

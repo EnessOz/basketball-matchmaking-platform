@@ -9,6 +9,7 @@ const courtRoutes = require("./routes/courtRoutes");
 const matchRoutes = require("./routes/matchRoutes");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/courts", courtRoutes);
 app.use("/matches", matchRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+app.use("/notifications", notificationRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

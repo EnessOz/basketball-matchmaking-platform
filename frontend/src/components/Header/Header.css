@@ -66,3 +66,50 @@
 .register-link:hover {
   background: #ffb13b;
 }
+
+/* Bildirim zili */
+
+.notification-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  text-decoration: none;
+  border-radius: 50%;
+  transition: 0.2s ease;
+}
+
+.notification-link:hover {
+  background: rgba(255, 152, 0, 0.12);
+}
+
+.notification-bell {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 1px;
+  right: 0;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ff3b30;
+  color: #ffffff;
+
+  border: 2px solid #111111;
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 800;
+  box-sizing: border-box;
+}

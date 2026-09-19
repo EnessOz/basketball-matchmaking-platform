@@ -1,4 +1,6 @@
 const Match = require("../models/Match");
+const User = require("../models/User");
+const Notification = require("../models/Notification");
 
 const getAllMatches = async (req, res) => {
   try {
@@ -48,8 +50,46 @@ const createMatch = async (req, res) => {
       participants: [req.userId],
     });
 
+    const now = new Date();
+
+    const usersToNotify = await User.find({
+      _id: { $ne: req.userId },
+      favoriteCourts: newMatch.courtId,
+      $or: [
+        {
+          notificationsMutedUntil: null,
+        },
+        {
+          notificationsMutedUntil: {
+            $lte: now,
+          },
+        },
+        {
+          notificationsMutedUntil: {
+            $exists: false,
+          },
+        },
+      ],
+    }).select("_id");
+
+    if (usersToNotify.length > 0) {
+      const notifications = usersToNotify.map((user) => ({
+        recipient: user._id,
+        sender: req.userId,
+        match: newMatch._id,
+        court: newMatch.courtId,
+        type: "favorite_court_match",
+      }));
+
+      await Notification.insertMany(notifications, {
+        ordered: false,
+      });
+    }
+
     res.status(201).json(newMatch);
   } catch (error) {
+    console.error("Create match error:", error);
+
     res.status(400).json({
       message: "Maç oluşturulamadı",
     });
@@ -73,7 +113,8 @@ const joinMatch = async (req, res) => {
     }
 
     const alreadyJoined = match.participants.some(
-      (participantId) => participantId.toString() === req.userId
+      (participantId) =>
+        participantId.toString() === req.userId
     );
 
     if (alreadyJoined) {
@@ -111,7 +152,8 @@ const leaveMatch = async (req, res) => {
     }
 
     const participantIndex = match.participants.findIndex(
-      (participantId) => participantId.toString() === req.userId
+      (participantId) =>
+        participantId.toString() === req.userId
     );
 
     if (participantIndex === -1) {
