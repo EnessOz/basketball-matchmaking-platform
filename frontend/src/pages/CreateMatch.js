@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./CreateMatch.css";
 
 const CreateMatch = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [court, setCourt] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -11,7 +12,6 @@ const CreateMatch = () => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [description, setDescription] = useState("");
-  const [createdMatch, setCreatedMatch] = useState(null);
   const [message, setMessage] = useState("");
 
   const now = new Date();
@@ -22,13 +22,18 @@ const CreateMatch = () => {
     fetch("http://localhost:5000/courts")
       .then((response) => response.json())
       .then((data) => {
-        const foundCourt = data.find((court) => court._id === id);
+        const foundCourt = data.find(
+          (court) => court._id === id
+        );
 
         setCourt(foundCourt);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Court could not be loaded:", error);
+        console.error(
+          "Court could not be loaded:",
+          error
+        );
         setLoading(false);
       });
   }, [id]);
@@ -39,7 +44,9 @@ const CreateMatch = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setMessage("Maç oluşturmak için giriş yapmalısın.");
+      setMessage(
+        "Maç oluşturmak için giriş yapmalısın."
+      );
       return;
     }
 
@@ -53,29 +60,36 @@ const CreateMatch = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/matches", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(match),
-      });
+      const response = await fetch(
+        "http://localhost:5000/matches",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(match),
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        setMessage(data.message || "Maç oluşturulamadı");
+        setMessage(
+          data.message || "Maç oluşturulamadı"
+        );
         return;
       }
 
-      setCreatedMatch(data);
       setMessage("");
 
-      console.log("Match Created:");
-      console.log(data);
+      navigate(`/matches/${data._id}`);
     } catch (error) {
-      console.error("Match could not be created:", error);
+      console.error(
+        "Match could not be created:",
+        error
+      );
+
       setMessage("Sunucuya bağlanılamadı");
     }
   };
@@ -92,7 +106,9 @@ const CreateMatch = () => {
     return (
       <div className="create-match-page">
         <h1>Saha bulunamadı</h1>
-        <p>Maç oluşturmak istediğin saha mevcut değil.</p>
+        <p>
+          Maç oluşturmak istediğin saha mevcut değil.
+        </p>
       </div>
     );
   }
@@ -102,13 +118,18 @@ const CreateMatch = () => {
       <div className="create-match-container">
         <h1>Maç Oluştur</h1>
 
-        <p className="create-match-court-name">{court.name}</p>
+        <p className="create-match-court-name">
+          {court.name}
+        </p>
 
         <p className="create-match-court-location">
           {court.district} - {court.city}
         </p>
 
-        <form className="create-match-form" onSubmit={handleSubmit}>
+        <form
+          className="create-match-form"
+          onSubmit={handleSubmit}
+        >
           <label>
             Tarih
             <input
@@ -129,8 +150,14 @@ const CreateMatch = () => {
               type="time"
               required
               value={time}
-              min={date === today ? currentTime : undefined}
-              onChange={(e) => setTime(e.target.value)}
+              min={
+                date === today
+                  ? currentTime
+                  : undefined
+              }
+              onChange={(e) =>
+                setTime(e.target.value)
+              }
             />
           </label>
 
@@ -140,44 +167,21 @@ const CreateMatch = () => {
               placeholder="Maç hakkında kısa bilgi yaz..."
               required
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) =>
+                setDescription(e.target.value)
+              }
             />
           </label>
 
-          <button type="submit">Maçı Oluştur</button>
+          <button type="submit">
+            Maçı Oluştur
+          </button>
         </form>
 
         {message && (
           <p className="create-match-message">
             {message}
           </p>
-        )}
-
-        {createdMatch && (
-          <div className="created-match-card">
-            <h2>Maç Oluşturuldu</h2>
-
-            <p>
-              <strong>Saha:</strong> {createdMatch.courtName}
-            </p>
-
-            <p>
-              <strong>Tarih:</strong> {createdMatch.date}
-            </p>
-
-            <p>
-              <strong>Saat:</strong> {createdMatch.time}
-            </p>
-
-            <p>
-              <strong>Katılımcı Sayısı:</strong>{" "}
-              {createdMatch.participants?.length || 0}
-            </p>
-
-            <p>
-              <strong>Açıklama:</strong> {createdMatch.description}
-            </p>
-          </div>
         )}
       </div>
     </div>

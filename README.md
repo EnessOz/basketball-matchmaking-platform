@@ -6,7 +6,7 @@ The project is currently under active development.
 
 ---
 
-## Features
+**Features**
 
 - Basketball court listing
 - Court search and district filtering
@@ -19,6 +19,11 @@ The project is currently under active development.
 - User-specific match ownership
 - My Matches page
 - Users can delete their own matches
+- Rank-based daily match creation limits
+- Rank-based daily match participation limits
+- Match creation cooldown
+- 90-minute match time blocks
+- Prevention of joining overlapping matches
 - User registration and login
 - Password hashing with bcrypt
 - JWT authentication
@@ -31,17 +36,34 @@ The project is currently under active development.
 
 ---
 
-## Tech Stack
+**Rank System**
 
-### Frontend
+New users start with 1000 rank points.
 
+Rank points determine how many matches a user can create or participate in per day.
+
+| Rank Points | Join Limit | Create Limit |
+|------------|------------|--------------|
+| 0–499 | 1 | 0 |
+| 500–999 | 1 | 1 |
+| 1000–1499 | 2 | 1 |
+| 1500+ | 2 | 2 |
+
+Matches are currently treated as 90-minute time blocks. A user cannot join another match if its time overlaps with a match they are already participating in.
+
+The point earning, penalty and location verification systems are still under development.
+
+---
+
+**Tech Stack**
+
+Frontend:
 - React
 - JavaScript
 - React Router
 - CSS
 
-### Backend
-
+Backend:
 - Node.js
 - Express.js
 - MongoDB
@@ -51,21 +73,21 @@ The project is currently under active development.
 
 ---
 
-## Current Development
+**Currently Working On**
 
-Currently working on:
-
-- Notification spam protection
-- Match creation rate limiting and cooldown
-- Notification center improvements
-- Match lifecycle and expiration
+- Rank point transactions
+- Match check-in and location verification
+- Attendance verification
+- Player ratings
+- Rank rewards and penalties
+- Match deletion abuse protection
+- Daily and rolling 7-day usage tracking
 - Player profiles
 
-Planned for later:
-
+Later:
+- Regional rankings and leaderboards
+- Rank badges
 - Match reminders
-- Match check-in and attendance
-- Trust Score
 - Interactive maps
 - Real-time features
 - Image hosting
@@ -73,29 +95,11 @@ Planned for later:
 
 ---
 
-## Installation
+**Installation**
 
-### Frontend
+Frontend:
 
 ```bash
 cd frontend
 npm install
 npm start
-```
-
-### Backend
-
-```bash
-cd backend
-npm install
-node src/server.js
-```
-
-Create a `.env` file inside the backend directory:
-
-```env
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-```
-
-Do not commit the `.env` file.
