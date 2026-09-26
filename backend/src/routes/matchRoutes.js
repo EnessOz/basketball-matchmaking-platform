@@ -9,6 +9,7 @@ const {
   createMatch,
   joinMatch,
   leaveMatch,
+  verifyLocation,
   deleteMatch,
 } = require("../controllers/matchController");
 
@@ -25,6 +26,12 @@ router.post("/", authMiddleware, createMatch);
 router.patch("/:id/join", authMiddleware, joinMatch);
 
 router.patch("/:id/leave", authMiddleware, leaveMatch);
+
+router.patch(
+  "/:id/verify-location",
+  authMiddleware,
+  verifyLocation
+);
 
 router.delete("/:id", authMiddleware, deleteMatch);
 

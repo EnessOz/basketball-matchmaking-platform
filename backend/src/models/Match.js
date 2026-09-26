@@ -44,6 +44,22 @@ const matchSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+
+  locationVerifications: [
+    {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+
+      verifiedAt: {
+        type: Date,
+        required: true,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("Match", matchSchema);
