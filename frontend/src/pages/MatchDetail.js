@@ -10,10 +10,13 @@ const MatchDetail = () => {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
-  const [locationLoading, setLocationLoading] = useState(false);
+  const [locationLoading, setLocationLoading] =
+    useState(false);
 
   const storedUser = localStorage.getItem("user");
-  const user = storedUser ? JSON.parse(storedUser) : null;
+  const user = storedUser
+    ? JSON.parse(storedUser)
+    : null;
 
   useEffect(() => {
     fetch("http://localhost:5000/matches")
@@ -27,7 +30,10 @@ const MatchDetail = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Match could not be loaded:", error);
+        console.error(
+          "Match could not be loaded:",
+          error
+        );
         setLoading(false);
       });
   }, [id]);
@@ -57,7 +63,9 @@ const MatchDetail = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setMessage("Maça katılmak için giriş yapmalısın.");
+      setMessage(
+        "Maça katılmak için giriş yapmalısın."
+      );
       return;
     }
 
@@ -75,14 +83,19 @@ const MatchDetail = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        setMessage(data.message || "Maça katılınamadı.");
+        setMessage(
+          data.message || "Maça katılınamadı."
+        );
         return;
       }
 
       setMatch(data);
       setMessage("Maça katıldın.");
     } catch (error) {
-      console.error("Could not join match:", error);
+      console.error(
+        "Could not join match:",
+        error
+      );
       setMessage("Sunucuya bağlanılamadı.");
     }
   };
@@ -91,7 +104,9 @@ const MatchDetail = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setMessage("Maçtan ayrılmak için giriş yapmalısın.");
+      setMessage(
+        "Maçtan ayrılmak için giriş yapmalısın."
+      );
       return;
     }
 
@@ -109,14 +124,19 @@ const MatchDetail = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        setMessage(data.message || "Maçtan ayrılınamadı.");
+        setMessage(
+          data.message || "Maçtan ayrılınamadı."
+        );
         return;
       }
 
       setMatch(data);
       setMessage("Maçtan ayrıldın.");
     } catch (error) {
-      console.error("Could not leave match:", error);
+      console.error(
+        "Could not leave match:",
+        error
+      );
       setMessage("Sunucuya bağlanılamadı.");
     }
   };
@@ -153,8 +173,10 @@ const MatchDetail = () => {
                 Authorization: `Bearer ${token}`,
               },
               body: JSON.stringify({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
+                latitude:
+                  position.coords.latitude,
+                longitude:
+                  position.coords.longitude,
               }),
             }
           );
@@ -163,20 +185,21 @@ const MatchDetail = () => {
 
           if (!response.ok) {
             setMessage(
-              data.message || "Konum doğrulanamadı."
+              data.message ||
+                "Konum doğrulanamadı."
             );
             return;
           }
 
           setMessage(data.message);
 
-          // Backend doğrulamayı Match üzerinde kaydetti.
-          // Sayfayı tamamen yenilemeden local state'i de
-          // güncelliyoruz.
           setMatch((currentMatch) => ({
             ...currentMatch,
             locationVerifications: [
-              ...(currentMatch.locationVerifications || []),
+              ...(
+                currentMatch.locationVerifications ||
+                []
+              ),
               {
                 user: user.id,
                 verifiedAt: data.verifiedAt,
@@ -184,9 +207,6 @@ const MatchDetail = () => {
             ],
           }));
 
-          // localStorage içindeki kullanıcı puanını da güncelle.
-          // Böylece kullanıcı verisini kullanan diğer frontend
-          // bölümleri eski rank puanını göstermesin.
           if (
             user &&
             typeof data.rankPoints === "number"
@@ -211,31 +231,44 @@ const MatchDetail = () => {
             error
           );
 
-          setMessage("Sunucuya bağlanılamadı.");
+          setMessage(
+            "Sunucuya bağlanılamadı."
+          );
         } finally {
           setLocationLoading(false);
         }
       },
 
       (error) => {
-        console.error("Geolocation error:", error);
+        console.error(
+          "Geolocation error:",
+          error
+        );
 
-        if (error.code === error.PERMISSION_DENIED) {
+        if (
+          error.code ===
+          error.PERMISSION_DENIED
+        ) {
           setMessage(
             "Konum izni verilmedi. Doğrulama yapabilmek için tarayıcıdan konum izni vermelisin."
           );
         } else if (
-          error.code === error.POSITION_UNAVAILABLE
+          error.code ===
+          error.POSITION_UNAVAILABLE
         ) {
           setMessage(
             "Konum bilgisi şu anda alınamıyor."
           );
-        } else if (error.code === error.TIMEOUT) {
+        } else if (
+          error.code === error.TIMEOUT
+        ) {
           setMessage(
             "Konum alınırken zaman aşımı oluştu. Tekrar deneyebilirsin."
           );
         } else {
-          setMessage("Konum bilgisi alınamadı.");
+          setMessage(
+            "Konum bilgisi alınamadı."
+          );
         }
 
         setLocationLoading(false);
@@ -253,13 +286,25 @@ const MatchDetail = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setMessage("Maçı silmek için giriş yapmalısın.");
+      setMessage(
+        "Maçı silmek için giriş yapmalısın."
+      );
       return;
     }
 
-    const confirmed = window.confirm(
-      "Bu maçı silmek istediğine emin misin?"
-    );
+    let confirmMessage =
+      "Bu maçı silmek istediğine emin misin?";
+
+    if (
+      match.locationRequired &&
+      !hasVerifiedLocation
+    ) {
+      confirmMessage =
+        "Bu maçta konum doğrulaması zorunlu. Konumunu doğrulamadan maçı silersen 25 rank puanı kaybedeceksin. Yine de silmek istiyor musun?";
+    }
+
+    const confirmed =
+      window.confirm(confirmMessage);
 
     if (!confirmed) return;
 
@@ -277,13 +322,37 @@ const MatchDetail = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        setMessage(data.message || "Maç silinemedi.");
+        setMessage(
+          data.message || "Maç silinemedi."
+        );
         return;
+      }
+
+      if (
+        user &&
+        typeof data.rankPoints === "number"
+      ) {
+        const updatedUser = {
+          ...user,
+          rankPoints: data.rankPoints,
+        };
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify(updatedUser)
+        );
+
+        window.dispatchEvent(
+          new Event("authChanged")
+        );
       }
 
       navigate("/matches");
     } catch (error) {
-      console.error("Match could not be deleted:", error);
+      console.error(
+        "Match could not be deleted:",
+        error
+      );
       setMessage("Sunucuya bağlanılamadı.");
     }
   };
@@ -318,7 +387,9 @@ const MatchDetail = () => {
           <p>🕒 {match.time}</p>
 
           <p className="match-participant-info">
-            🏀 {match.participants?.length || 0} Katılımcı
+            🏀{" "}
+            {match.participants?.length || 0}{" "}
+            Katılımcı
 
             <span className="participation-status">
               <span className="participation-dot"></span>
@@ -332,6 +403,48 @@ const MatchDetail = () => {
           <p>{match.description}</p>
         </div>
 
+        {isCreator &&
+          match.locationRequired &&
+          !hasVerifiedLocation && (
+            <div className="location-required-warning">
+              <strong>
+                ⚠️ Konum doğrulaması zorunlu
+              </strong>
+
+              <p>
+                Son 7 gündeki maç silme
+                durumun nedeniyle bu maçta
+                sahaya geldiğini konum ile
+                doğrulaman gerekiyor.
+              </p>
+
+              <p>
+                Maç süresi içinde konumunu
+                doğrulamazsan veya doğrulamadan
+                bu maçı silersen 25 rank puanı
+                kaybedersin.
+              </p>
+            </div>
+          )}
+
+        {isCreator &&
+          match.locationRequired &&
+          hasVerifiedLocation && (
+            <div className="location-required-success">
+              <strong>
+                ✅ Zorunlu konum doğrulaması
+                tamamlandı
+              </strong>
+
+              <p>
+                Bu maç için konum yükümlülüğünü
+                tamamladın. Bu maçı daha sonra
+                silersen zorunlu konum cezası
+                uygulanmaz.
+              </p>
+            </div>
+          )}
+
         {message && (
           <p className="match-join-message">
             {message}
@@ -343,11 +456,14 @@ const MatchDetail = () => {
             <>
               {hasVerifiedLocation ? (
                 <p>
-                  ✅ Bu maç için konumun doğrulandı.
+                  ✅ Bu maç için konumun
+                  doğrulandı.
                 </p>
               ) : (
                 <button
-                  onClick={handleVerifyLocation}
+                  onClick={
+                    handleVerifyLocation
+                  }
                   disabled={locationLoading}
                 >
                   {locationLoading
@@ -360,7 +476,9 @@ const MatchDetail = () => {
 
           {isCreator ? (
             <>
-              <p>🏆 Bu maçı sen oluşturdun.</p>
+              <p>
+                🏆 Bu maçı sen oluşturdun.
+              </p>
 
               <button
                 className="delete-match-button"
@@ -370,11 +488,15 @@ const MatchDetail = () => {
               </button>
             </>
           ) : isJoined ? (
-            <button onClick={handleLeaveMatch}>
+            <button
+              onClick={handleLeaveMatch}
+            >
               Maçtan Ayrıl
             </button>
           ) : (
-            <button onClick={handleJoinMatch}>
+            <button
+              onClick={handleJoinMatch}
+            >
               Maça Katıl
             </button>
           )}

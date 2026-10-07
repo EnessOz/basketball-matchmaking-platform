@@ -16,6 +16,10 @@ const {
 const MATCH_CREATION_COOLDOWN_MS = 60 * 1000;
 const MATCH_DURATION_MINUTES = 90;
 
+const DELETION_WINDOW_DAYS = 7;
+const DELETION_LIMIT_BEFORE_LOCATION_REQUIRED = 5;
+const REQUIRED_LOCATION_PENALTY = -25;
+
 const getTurkeyDayRange = () => {
   const now = new Date();
 
@@ -33,6 +37,32 @@ const getTurkeyDayRange = () => {
     startOfDay,
     endOfDay,
   };
+};
+
+// Son 7 günlük kayan pencerenin başlangıcını döndürür.
+const getDeletionWindowStart = (now = new Date()) => {
+  return new Date(
+    now.getTime() -
+      DELETION_WINDOW_DAYS * 24 * 60 * 60 * 1000
+  );
+};
+
+// Kullanıcının sadece son 7 gündeki silme kayıtlarını döndürür.
+const getRecentDeletionHistory = (
+  deletionHistory = [],
+  now = new Date()
+) => {
+  const windowStart = getDeletionWindowStart(now);
+
+  return deletionHistory.filter((date) => {
+    const deletionDate = new Date(date);
+
+    return (
+      !Number.isNaN(deletionDate.getTime()) &&
+      deletionDate >= windowStart &&
+      deletionDate <= now
+    );
+  });
 };
 
 // "18:30" gibi bir saati gece yarısından itibaren
@@ -70,7 +100,8 @@ const getMatchEndDate = (date, time) => {
   const matchStart = getMatchStartDate(date, time);
 
   return new Date(
-    matchStart.getTime() + MATCH_DURATION_MINUTES * 60 * 1000
+    matchStart.getTime() +
+      MATCH_DURATION_MINUTES * 60 * 1000
   );
 };
 
@@ -231,16 +262,42 @@ const createMatch = async (req, res) => {
       });
     }
 
+    // Son 7 gündeki silme kayıtlarını hesapla.
+    //
+    // 0-4 silme:
+    // Yeni maç normal oluşturulur.
+    //
+    // 5 veya daha fazla silme:
+    // Bundan sonra oluşturulan maç için
+    // creator'ın saha konumunu doğrulaması zorunludur.
+    const recentDeletionHistory =
+      getRecentDeletionHistory(
+        user.matchDeletionHistory || [],
+        now
+      );
+
+    const locationRequired =
+      recentDeletionHistory.length >=
+      DELETION_LIMIT_BEFORE_LOCATION_REQUIRED;
+
     const newMatch = await Match.create({
       ...req.body,
       createdBy: req.userId,
       participants: [req.userId],
+      locationRequired,
+      requiredLocationPenaltyApplied: false,
     });
 
     user.matchCreationHistory = [
       ...todaysCreations,
       now,
     ];
+
+    // Eski silme kayıtlarını User üzerinde sonsuza kadar
+    // biriktirmiyoruz. Sadece halen geçerli olan
+    // son 7 günlük kayıtları tutuyoruz.
+    user.matchDeletionHistory =
+      recentDeletionHistory;
 
     await user.save();
 
@@ -284,7 +341,13 @@ const createMatch = async (req, res) => {
       );
     }
 
-    res.status(201).json(newMatch);
+    res.status(201).json({
+      ...newMatch.toObject(),
+      locationRequirementWarning:
+        locationRequired
+          ? "Son 7 gün içinde 5 veya daha fazla maç sildiğin için bu maçta konum doğrulaması zorunludur."
+          : null,
+    });
   } catch (error) {
     console.error(
       "Create match error:",
@@ -657,11 +720,87 @@ const deleteMatch = async (
       });
     }
 
+    const user = await User.findById(
+      req.userId
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Kullanıcı bulunamadı",
+      });
+    }
+
+    const now = new Date();
+
+    // Sadece son 7 günlük silme kayıtlarını koru.
+    const recentDeletionHistory =
+      getRecentDeletionHistory(
+        user.matchDeletionHistory || [],
+        now
+      );
+
+    // Zorunlu lokasyonlu maçlarda creator'ın
+    // gerçekten konum doğrulayıp doğrulamadığını kontrol et.
+    const creatorVerifiedLocation =
+      match.locationVerifications.some(
+        (verification) =>
+          verification.user.toString() ===
+          req.userId
+      );
+
+    let penaltyApplied = false;
+    let updatedRankPoints =
+      typeof user.rankPoints === "number"
+        ? user.rankPoints
+        : 1000;
+
+    // Maç zorunlu lokasyonluysa ve creator
+    // konumunu doğrulamadan maçı siliyorsa -25.
+    //
+    // Creator konumunu daha önce doğrulamışsa
+    // maçı sonradan silmesi ceza oluşturmaz.
+    if (
+      match.locationRequired &&
+      !creatorVerifiedLocation &&
+      !match.requiredLocationPenaltyApplied
+    ) {
+      const pointResult =
+        await changeUserPoints({
+          userId: req.userId,
+          amount:
+            REQUIRED_LOCATION_PENALTY,
+          reason:
+            "required_location_penalty",
+          matchId: match._id,
+          description: `${match.courtName} sahasındaki zorunlu konum doğrulamalı maç, konum doğrulanmadan silindi`,
+        });
+
+      match.requiredLocationPenaltyApplied =
+        true;
+
+      penaltyApplied = true;
+      updatedRankPoints =
+        pointResult.newPoints;
+    }
+
+    // Bu silmeyi rolling 7 günlük geçmişe ekle.
+    user.matchDeletionHistory = [
+      ...recentDeletionHistory,
+      now,
+    ];
+
+    await user.save();
+
     await match.deleteOne();
 
     res.json({
-      message:
-        "Maç başarıyla silindi",
+      message: penaltyApplied
+        ? "Maç silindi. Zorunlu konum doğrulaması yapılmadığı için 25 rank puanı düşürüldü."
+        : "Maç başarıyla silindi",
+      penaltyApplied,
+      rankPoints: updatedRankPoints,
+      deletionsLast7Days:
+        user.matchDeletionHistory.length,
     });
   } catch (error) {
     console.error(

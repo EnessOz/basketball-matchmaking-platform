@@ -36,6 +36,12 @@ const userSchema = new mongoose.Schema({
     },
   ],
 
+  matchDeletionHistory: [
+    {
+      type: Date,
+    },
+  ],
+
   rankPoints: {
     type: Number,
     default: 1000,
